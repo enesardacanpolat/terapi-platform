@@ -39,4 +39,8 @@ class TherapistProfile(Base):
     license_no: Mapped[str] = mapped_column(String(50))
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     session_minutes: Mapped[int] = mapped_column(Integer, default=50)
-    session_price: Mapped[Decimal] = mapped_column(Numeric(10, 2))
+    session_price: Mapped[Decimal] = mapped_column(
+        Numeric(10, 2)
+    )
+
+
