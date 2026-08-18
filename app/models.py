@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from datetime import datetime
 
-from sqlalchemy import  (Boolean, DateTime, ForeignKey, Integer, Numeric, String, Text, func)
+from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
+                        Numeric, String, Table, Text, func)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -43,4 +44,19 @@ class TherapistProfile(Base):
         Numeric(10, 2)
     )
 
+class Specialty(Base):
+    __tablename__ = "specialties"
 
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    name: Mapped[str] = mapped_column(String(80), unique=True, index=True)
+
+    therapist_specialties = Table(
+        "therapist_specialties",
+        Base.metadata,
+        Column("therapist_id", UUID(as_uuid=True),
+               ForeignKey("therapist_profiles.id"), primary_key=True),
+        Column("specialty_id", UUID(as_uuid=True),
+               ForeignKey("specialties.id"), primary_key=True),
+    )
