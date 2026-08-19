@@ -1,14 +1,15 @@
 import uuid
 from decimal import Decimal
 
-from datetime import datetime
+from datetime import datetime, time
 
 from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
-                        Numeric, String, Table, Text, func)
+                        Numeric, String, Table, Text, func, Time)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
+
 
 
 class User(Base):
@@ -60,3 +61,29 @@ class Specialty(Base):
         Column("specialty_id", UUID(as_uuid=True),
                ForeignKey("specialties.id"), primary_key=True),
     )
+
+class AvailabilityRule(Base):
+    __tablename__ = "availability_rules"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    therapist_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("therapist_profiles.id")
+    )
+    weekday: Mapped[int] = mapped_column(Integer)
+    start_time: Mapped[time] = mapped_column(Time)
+    end_time: Mapped[time] = mapped_column(Time)
+
+class TimeOff(Base):
+    __tablename__ = "time_offs"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    therapist_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("therapist_profiles.id")
+    )
+    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    reason: Mapped[str | None] = mapped_column(String(200))
