@@ -5,11 +5,10 @@ from datetime import datetime, time
 
 from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
                         Numeric, String, Table, Text, func, Time)
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID,TSTZRANGE, Range
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
-
 
 
 class User(Base):
@@ -87,3 +86,21 @@ class TimeOff(Base):
     starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     reason: Mapped[str | None] = mapped_column(String(200))
+
+class Appointment(Base):
+    __tablename__ = "appointments"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    therapist_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("therapist_profiles.id")
+    )
+    client_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id")
+    )
+    slot: Mapped[Range[datetime]] = mapped_column(TSTZRANGE)
+    status: Mapped[str] = mapped_column(String(20), default="pending")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
