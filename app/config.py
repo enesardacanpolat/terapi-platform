@@ -8,5 +8,8 @@ class Settings(BaseSettings):
     secret_key: str
     debug: bool = False
 
+    access_token_expire_minutes: int = 30
+    jwt_algorithm: str = "HS256"
+
 
 settings = Settings()
