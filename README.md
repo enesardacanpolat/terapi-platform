@@ -1,80 +1,109 @@
-# iyi — Terapi platformu
+# iyi — Therapy Platform
 
-Mevcut FastAPI + PostgreSQL projesi üzerine kurulmuş, mobil ekranlara uyumlu ilk web sürümü. Türkçe arayüz; sıcak yeşil, mercan ve sarı renkler. Ön yüz ayrı bir derleme gerektirmez.
+A mobile-friendly web MVP built with FastAPI and PostgreSQL. The interface is in Turkish and uses warm green, coral, and yellow tones. The frontend does not require a separate build step.
 
-## Hazır akışlar
+## Features
 
-- Duygu seçimi → birden fazla beklenti seçimi → çalışma alanı eşleşen, doğrulanmış uzmanlar. Eşleştirme açık kurallara dayanır; tanı veya klinik değerlendirme yapmaz.
-- Uzman profili: eğitim, çalışma alanları, tanıtım, ücret, süre ve tamamlanan seanslardan gelen anonim değerlendirmeler.
-- Danışan ve uzman hesapları; kişiye özel randevu ekranı.
-- Haftalık çalışma saatleri; 90 gün boyunca Türkiye saatine göre müsait seanslar.
-- Randevu talebi → uzman onayı → seans bittikten sonra uzman tarafından tamamlandı işareti → tek değerlendirme.
-- Gelecek randevuyu iki taraf da iptal edebilir; saat tekrar açılır.
-- Hem danışan hem uzman için çakışmalar PostgreSQL exclusion constraint ile engellenir. Aynı anda gelen isteklerde de korunur.
-- Duygu ve beklentiler yalnızca randevudaki paylaşım kutusu seçilirse uzmana iletilir. Ham belge numarası herkese açık profilde gösterilmez.
-- Profilde unvan, eğitim veya belge numarası değiştiğinde doğrulama kaldırılır. Çalışma saatlerini silmek mevcut randevuyu iptal etmez.
+- Mood selection → multiple support preferences → verified professionals with matching areas of practice. Matching uses transparent rules; it does not provide a diagnosis or clinical assessment.
+- Professional profiles with education, areas of practice, biographies, session prices, session duration, and reviews from clients who have completed a session. Client names are not displayed with reviews.
+- Separate client and professional accounts, each with an appointment dashboard.
+- Weekly availability and bookable sessions up to 90 days ahead, using the `Europe/Istanbul` time zone.
+- Appointment request → professional approval → completion marked by the professional after the session ends → one review per client and professional.
+- Either participant can cancel a future appointment, making the time slot available again.
+- PostgreSQL exclusion constraints prevent overlapping appointments for both clients and professionals, including concurrent booking requests.
+- Mood and support preferences are shared with the professional only when the client selects the sharing checkbox during booking. Credential numbers are not displayed on public profiles.
+- Changing a professional's title, education, or credential number removes their verified status. Removing availability rules does not cancel existing appointments.
 
-## Başlatma
+## Run locally
 
-Proje klasöründe:
+From the project directory, activate the existing virtual environment:
 
 ```sh
 source .venv/bin/activate
-# Yeni kurulumda: python -m pip install -r requirements.txt
-# .env.example dosyasından .env oluşturup bağlantı ve SECRET_KEY değerlerini ayarla.
+```
+
+For a fresh installation, create the virtual environment first, install the dependencies, and copy the environment template:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+cp .env.example .env
+```
+
+Do not overwrite an existing `.env` file. Configure `DATABASE_URL`, `POSTGRES_PASSWORD`, and `SECRET_KEY` in your local `.env` file. The password in `DATABASE_URL` must match `POSTGRES_PASSWORD`, and the database connection must match the Docker Compose settings. Never commit real credentials.
+
+Start the database, apply migrations, and run the application:
+
+```sh
 docker compose up -d db
 alembic upgrade head
 DEBUG=false uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Arayüz: http://127.0.0.1:8000 · API dokümanı: http://127.0.0.1:8000/docs
+- Application: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- API documentation: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
-`.env` dosyasındaki mevcut bağlantı korunmuştur. Yeni kurulumdaki veritabanı bağlantısı Docker Compose ayarlarıyla eşleşmelidir. Gerçek ortamda güçlü bir SECRET_KEY kullanın; DEBUG ve DEMO_MODE kapalı olmalı.
+Use a strong `SECRET_KEY`. Keep `DEBUG` and `DEMO_MODE` disabled outside local development. Changing `POSTGRES_PASSWORD` in `.env` does not change the password of an existing PostgreSQL user; update the database password separately when rotating credentials.
 
-## Örnek verilerle deneme
+## Try the demo
 
-Normal sunucuyu durdurup çalıştırın:
+Stop any application server already using port 8000, then run:
 
 ```sh
 DEBUG=false .venv/bin/python scripts/demo.py
 ```
 
-Demo, aynı PostgreSQL veritabanında rastgele isimli ayrı bir şema oluşturur. Gerçek uygulama kayıtlarını değiştirmez. Üst bant örnek profil kullanıldığını belirtir; demo kapatılınca örnek şema silinir. Örnek eğitimler gerçek bir yeterlilik beyanı değildir. Demo sunucusu yalnızca bu bilgisayara açıktır.
+The demo creates a separate, randomly named schema in the same PostgreSQL database. It does not modify existing application records. A banner identifies the profiles as examples, and the demo schema is removed when the script shuts down normally. Sample education details are not real professional credentials. The demo server is accessible only from the local computer.
 
-| Hesap | E-posta | Şifre |
+The following accounts are disposable demo accounts, not production credentials:
+
+| Account | Email | Password |
 | --- | --- | --- |
-| Danışan | danisan@iyi.example | IyiDemo2026! |
-| Deniz Yılmaz (uzman) | uzman1@iyi.example | IyiDemo2026! |
-| Ece Demir (uzman) | uzman2@iyi.example | IyiDemo2026! |
-| Can Aydın (uzman) | uzman3@iyi.example | IyiDemo2026! |
+| Client | danisan@iyi.example | IyiDemo2026! |
+| Deniz Yılmaz — professional | uzman1@iyi.example | IyiDemo2026! |
+| Ece Demir — professional | uzman2@iyi.example | IyiDemo2026! |
+| Can Aydın — professional | uzman3@iyi.example | IyiDemo2026! |
 
-Duygu ve beklenti seçin, uzmanın profilinden yarın için saat seçin, danışan hesabıyla randevu alın. Çıkış yapıp ilgili uzman hesabıyla girerek randevuyu onaylayın. Aynı gün içinde geçmiş saatler listelenmez. Yeni açılan tarayıcı sekmesinde oturum tekrar gerekebilir.
+Select a mood and support preferences, open a professional's profile, choose a time slot for tomorrow, and book using the client account. Sign out and sign in as the corresponding professional to approve the appointment. Past time slots are not displayed. A new browser tab may require signing in again.
 
-## Uzman doğrulama
+## Professional verification
 
-Yeni uzman hesabından profil oluşturulabilir; doğrulanana kadar arama ve randevu alımına kapalıdır. Bu sürümde yönetici web paneli yoktur. İşletmeci eğitim ve mesleki belgeleri dışarıda inceledikten sonra yerel yönetim komutunu kullanır:
+Professionals can create their profiles after registration, but their profiles remain unavailable for public discovery and new bookings until verified. This version does not include an administrator web dashboard.
+
+After manually reviewing education and professional credentials outside the application, an operator can use the local management command:
 
 ```sh
-DEBUG=false .venv/bin/python scripts/verify_therapist.py PROFIL_UUID --credentials-reviewed
-# Onayı kaldırmak için:
-DEBUG=false .venv/bin/python scripts/verify_therapist.py PROFIL_UUID --revoke
+DEBUG=false .venv/bin/python scripts/verify_therapist.py PROFILE_UUID --credentials-reviewed
 ```
 
-Profil kimliği, uzman hesabının `/api/therapists/me` yanıtındaki `id` alanıdır. Kullanıcıların kendilerini onaylayabileceği bir API yoktur. Önceki yorum tablosundaki yazarı bilinmeyen kayıtlar korunur fakat herkese açık yorumlarda ve puan ortalamasında kullanılmaz.
+To revoke verification:
 
-## Test
+```sh
+DEBUG=false .venv/bin/python scripts/verify_therapist.py PROFILE_UUID --revoke
+```
+
+Replace `PROFILE_UUID` with the profile's `id` returned by `/api/therapists/me` when authenticated as the professional. There is no API that allows users to verify themselves.
+
+Legacy reviews without an associated client are preserved, but excluded from public reviews and rating averages.
+
+## Tests
 
 ```sh
 DEBUG=false .venv/bin/python -m unittest discover -s tests -v
 node --check app/static/app.js
 ```
 
-Testler rastgele isimli ayrı bir PostgreSQL şemasında tüm migration'ları sıfırdan uygular, geçici API sunucusu açar ve sonunda kendi şemasını kaldırır. Veritabanı kullanıcısının şema oluşturma izni gerekir. Mevcut uygulama verileri değişmez. Eşzamanlı çift rezervasyon, iki uzmana aynı anda randevu, doğrudan veritabanı çakışması, rol ve erişim kontrolleri, iptal, geçmiş saat, izin aralığı, doğrulama ve yorum kuralları sınanır.
+The tests apply all migrations from scratch in a separate PostgreSQL schema, start a temporary API server, and remove their schema afterward. The database user must have permission to create schemas. Existing application records are not modified.
 
-## Sonraki ürün aşamaları
+Coverage includes concurrent bookings, overlapping appointments with different professionals, direct database overlap protection, role and ownership checks, cancellations, past time slots, time off, verification, and review eligibility.
 
-Bu sürüm yerel olarak çalışan bir randevu MVP'sidir. Gerçek ödeme, görüntülü görüşme, e-posta/SMS gönderimi, şifre sıfırlama, e-posta doğrulama, yönetici/moderasyon paneli ve iOS/Android uygulaması henüz yoktur. “Randevu talebin uzmana iletildi” ifadesi kaydın uzman panelinde görünmesini anlatır; dış bildirim gönderilmez. Paneldeki Yenile düğmesi güncel kayıtları getirir.
+## Current scope and next steps
 
-Gerçek kullanıcılarla yayına çıkmadan önce kişisel veri süreçleri, bilgilendirme ve izin metinleri, uzman doğrulama iş akışı, saklama/silme kuralları, erişim kayıtları, hız sınırlaması, HTTPS, yedekleme ve geri yükleme planı tamamlanmalıdır. Yorumlar kimlik göstermeden yayınlansa da kullanıcı metne kişisel bilgi ekleyebilir; moderasyon akışı henüz uygulanmadı. Bunlar tamamlanmadan sürüm üretime hazır kabul edilmemelidir.
+This is a locally runnable appointment-booking MVP. It does not yet include payment processing, video calls, email or SMS notifications, password resets, email verification, administrator or moderation dashboards, or native iOS and Android apps.
 
-Mobil uygulama aynı `/api` servislerini kullanabilir. Sonraki aşamada tercih edilen mobil teknoloji ve görüşme/ödeme hizmeti üzerinden devam edilebilir.
+The message indicating that an appointment request has been sent to a professional means that the record is visible in their dashboard; no external notification is sent. The dashboard's refresh button retrieves the latest records.
+
+Before launching with real users, complete the personal-data handling processes, user notices and consent flows, professional verification workflow, retention and deletion rules, access logging, rate limiting, HTTPS configuration, and backup and recovery procedures. Although client names are hidden in public reviews, clients may include personal information in their review text; a moderation workflow has not yet been implemented. This version should not be considered production-ready.
+
+A future mobile application can use the same `/api` endpoints. Further development can build on the selected mobile framework and payment and video-call services.
