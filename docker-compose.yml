@@ -4,10 +4,10 @@ services:
     container_name: terapi_db
     environment:
       POSTGRES_USER: terapi
-      POSTGRES_PASSWORD: terapi_dev
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD gerekli}"
       POSTGRES_DB: terapi
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 

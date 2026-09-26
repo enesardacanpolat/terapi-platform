@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     database_url: str
     secret_key: str
     debug: bool = False
+    demo_mode: bool = False
 
     access_token_expire_minutes: int = 30
     jwt_algorithm: str = "HS256"

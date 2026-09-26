@@ -4,7 +4,7 @@ from decimal import Decimal
 from datetime import datetime, time
 
 from sqlalchemy import (Boolean, Column, DateTime, ForeignKey, Integer,
-                        Numeric, String, Table, Text, func, Time)
+                        Numeric, String, Table, Text, func, Time, JSON, CheckConstraint, UniqueConstraint)
 from sqlalchemy.dialects.postgresql import UUID,TSTZRANGE, Range
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -35,6 +35,7 @@ class TherapistProfile(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id"), unique=True
     )
+    education: Mapped[list[str]] = mapped_column(JSON, default=list)
     title: Mapped[str] = mapped_column(String(120))
     bio: Mapped[str | None] = mapped_column(Text)
     license_no: Mapped[str] = mapped_column(String(50))
@@ -99,8 +100,29 @@ class Appointment(Base):
     client_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("users.id")
     )
+    mood: Mapped[str | None] = mapped_column(String(20))
+    expectations: Mapped[list[str]] = mapped_column(JSON, default=list)
+    session_price: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
     slot: Mapped[Range[datetime]] = mapped_column(TSTZRANGE)
     status: Mapped[str] = mapped_column(String(20), default="pending")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+
+class Review(Base):
+    __tablename__ = "reviews"
+    __table_args__ = (
+        UniqueConstraint('therapist_id', 'client_id', name='uq_review_client_therapist'),
+        CheckConstraint('rating BETWEEN 1 AND 5', name='ck_review_rating'),
+    )
+    client_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey('users.id'))
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    therapist_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("therapist_profiles.id")
+    )
+    rating: Mapped[int] = mapped_column(Integer)
+    comment: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now()
+                                                 )

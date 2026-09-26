@@ -1,10 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-    <meta charset="utf-8">
-    <title>Terapi Platform</title>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#167668"><meta name="description" content="Kendine iyi gelmenin ilk adımı. İhtiyaçlarına göre uzmanları keşfet ve sana uygun bir seans planla.">
+  <title>iyi — Kendine bir alan aç.</title>
+  <link rel="stylesheet" href="/static/app.css"><script src="/static/app.js" defer></script>
 </head>
 <body>
-    <h1>{{ baslik }}</h1>
+  {% if demo_mode %}<div class="demo-banner">TASARIM VE İŞLEV DEMOSU · Profiller örnektir. Gerçek bir terapi hizmeti sunulmaz.</div>{% endif %}
+  <header class="header"><a href="/" class="logo" aria-label="iyi ana sayfa">iyi<span class="logo-dot">✳</span></a><nav aria-label="Ana menü"><button class="nav-link active" data-action="home">Kendine alan aç</button><button class="nav-link" data-action="browse">Uzmanları keşfet</button><a href="#how" class="nav-link">Nasıl çalışır?</a></nav><div id="account-nav"><button class="login" data-action="login">Giriş yap <span>↗</span></button></div></header>
+  <main>
+  <section id="discover-view">
+    <div class="hero"><div class="hero-copy"><div class="eyebrow"><span class="tiny-flower">✳</span> KÜÇÜK BİR ADIM, YENİ BİR BAŞLANGIÇ</div><h1>Kendine bir<br><em>alan aç.</em><svg class="heading-spark" viewBox="0 0 70 70" aria-hidden="true"><path d="M36 5v19M61 17L47 31M65 42H48M18 12l10 17" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/></svg></h1><p>Her duyguya yer var. Kendini dinle, ihtiyacını keşfet.<br>Sana uygun bir uzmanla ilk adımını at.</p><div class="hero-note"><span class="note-icon">♡</span> Kendi hızında, sana ait bir yolculuk.</div></div>
+    <div class="hero-art" aria-label="Güneş ve büyüyen çiçeklerden oluşan renkli illüstrasyon" role="img"><div class="art-label">Olduğun gibi, burada.</div><svg viewBox="0 0 500 360" aria-hidden="true"><defs><pattern id="dots" width="17" height="17" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#a9b0a0" opacity=".25"/></pattern></defs><rect width="500" height="360" rx="28" fill="#eeefdd"/><rect width="500" height="360" fill="url(#dots)"/><path d="M0 311Q121 215 237 305T500 272V360H0" fill="#c2d5a9"/><path d="M95 360V209a76 76 0 01152 0v151" fill="#f6a695"/><path d="M117 360V213a54 54 0 01108 0v147" fill="#fff1cc"/><circle cx="356" cy="105" r="57" fill="#f8c953"/><path d="M338 100v7m34-7v7m-34 13q18 18 34 0" fill="none" stroke="#725522" stroke-width="4" stroke-linecap="round"/><g stroke="#eabc43" stroke-width="4" stroke-linecap="round"><path d="M356 28V13m0 184v-15m77-77h16m-170 0h-15m145-54 11-11m-11 119 11 11M303 50l-11-11"/></g><path d="M331 350Q318 267 340 228" stroke="#287465" stroke-width="7" fill="none"/><path d="M327 309q-75-3-56-59 54 6 56 59M329 285q64-2 65-53-54-2-65 53" fill="#287465"/><g fill="#ea8066"><ellipse cx="348" cy="202" rx="24" ry="39"/><ellipse cx="348" cy="202" rx="24" ry="39" transform="rotate(60 348 202)"/><ellipse cx="348" cy="202" rx="24" ry="39" transform="rotate(120 348 202)"/></g><circle cx="348" cy="202" r="18" fill="#fce1a3"/><path d="M60 89l7 15 17 3-13 11 2 17-14-9-16 7 4-17-11-13 18-1z" fill="#739787"/><path d="M438 320q-8-44 10-64m-11 41q-34-4-29-29 26 1 29 29m4-19q30 0 31-22-24-2-31 22" fill="#789c65"/><path d="M44 210q18-22 34 0" fill="none" stroke="#baa68c" stroke-width="3" stroke-linecap="round"/></svg><span class="art-sticker">biraz kendine dön ↗</span></div></div>
+    <section class="checkin" aria-labelledby="checkin-heading"><div class="section-top"><div><span class="step-label" id="step-label">01 / 02 · SENİ DİNLEYELİM</span><h2 id="checkin-heading">Bugün nasıl hissediyorsun?</h2><p id="step-description">Doğru ya da yanlış bir cevap yok. Sana en yakın olanı seç.</p></div><div class="steps" aria-hidden="true"><span class="current"></span><span id="step-dot"></span></div></div>
+      <div id="mood-step"><div class="mood-grid" role="group" aria-label="Bugünkü duygun">
+      <button class="mood mood-good" data-mood="iyi" aria-pressed="false"><span class="face">☺</span><strong>İyi hissediyorum</strong><span>İçim biraz güneşli</span></button>
+      <button class="mood mood-mixed" data-mood="karisik" aria-pressed="false"><span class="face">〰</span><strong>Biraz karışık</strong><span>Adını koyamıyorum</span></button>
+      <button class="mood mood-anxious" data-mood="kaygili" aria-pressed="false"><span class="face">◔</span><strong>Kaygılıyım</strong><span>Zihnim çok dolu</span></button>
+      <button class="mood mood-sad" data-mood="uzgun" aria-pressed="false"><span class="face">☂</span><strong>Üzgünüm</strong><span>Biraz desteğe ihtiyacım var</span></button>
+<button class="mood mood-tired" data-mood="yorgun" aria-pressed="false">
+  <span class="face">☾</span>
+  <strong>Yorgunum</strong>
+  <span>Bir nefes almak istiyorum</span>
+</button>
+
+<button class="mood mood-mixed" data-mood="diger" aria-pressed="false">
+  <span class="face">✳</span>
+  <strong>Diğer</strong>
+  <span>Başka türlü hissediyorum</span>
+</button>
+
+</div>
+
+<div id="other-mood-area" hidden>
+  <label for="other-mood-text">
+    İstersen biraz anlat
+  </label>
+
+  <textarea
+    id="other-mood-text"
+    rows="4"
+    maxlength="1000"
+    placeholder="Nasıl hissettiğini veya destek almak istediğin konuyu yazabilirsin..."
+  ></textarea>
+
+  <p class="small">Yazmak isteğe bağlı. En fazla 1000 karakter.</p>
+</div>
+
+</div>
+      <div id="expectation-step" hidden><div id="expectation-options" class="expectation-grid"></div><p class="small">Birden fazla alan seçebilirsin. Seçimlerin uzmanların çalışma alanlarıyla karşılaştırılır; bu bir tanı veya klinik değerlendirme değildir.</p></div>
+      <div class="checkin-footer"><span class="privacy-note">⌑ Seçimlerini paylaşmak senin elinde.</span><div class="button-row"><button class="text-button" id="back-step" hidden>← Geri</button><button class="primary" id="next-step" disabled>Devam edelim <span>→</span></button></div></div>
+    </section>
+    <section id="results" class="results" hidden><div class="section-top"><div><span class="step-label">BİRLİKTE BİR SONRAKİ ADIMA</span><h2 id="results-title">Tanışabileceğin uzmanlar</h2><p id="results-description">Çalışma alanlarını incele, sana uygun zamanı seç.</p></div><button class="text-button" data-action="browse">Tüm uzmanlar ↗</button></div><div id="therapist-list" class="therapist-grid" aria-live="polite"></div></section>
+    <section id="how" class="how"><div class="section-top"><div><span class="step-label">SANA İYİ GELECEK BİR BAŞLANGIÇ</span><h2>İlk adım düşündüğünden yakın.</h2></div><span class="handwritten">Senin için, senin hızında ↘</span></div><div class="how-grid"><article><span class="how-number peach">01</span><h3>Kendine kulak ver</h3><p>Nasıl hissettiğini ve destek almak istediğin alanları bizimle paylaş.</p></article><article><span class="how-number yellow">02</span><h3>Uzmanını tanı</h3><p>Çalışma alanlarını, eğitim bilgilerini ve seans sonrası değerlendirmeleri incele.</p></article><article><span class="how-number mint">03</span><h3>Sana uygun zamanı seç</h3><p>Uzmanın açık saatlerinden randevunu oluştur, durumunu hesabından takip et.</p></article></div></section>
+    <aside class="kind-note"><span>✳</span><p>Her şeyi bugün çözmen gerekmiyor.<br><strong>Bazen başlamak, kendine yaptığın en güzel iyilik.</strong></p><span>♡</span></aside>
+  </section>
+  <section id="dashboard-view" hidden><div class="dashboard-heading"><span class="step-label">SANA AİT ALAN</span><h1 id="dashboard-title">Randevularım</h1><p id="dashboard-description"></p></div><div id="therapist-settings" hidden><div class="dashboard-grid"><section class="panel"><h2>Uzman profilim</h2><p id="verification-state" class="small"></p><form id="profile-form"><label>Unvan<input name="title" required minlength="2" maxlength="120" placeholder="Psikolog / Psikolojik danışman"></label><label>Diploma / mesleki belge numarası<input name="license_no" required minlength="3" maxlength="50"></label><label>Hakkımda<textarea name="bio" maxlength="3000" rows="3"></textarea></label><label>Eğitim bilgileri <span class="small">Her satıra bir eğitim</span><textarea name="education" rows="3" placeholder="Üniversite · Bölüm · Mezuniyet yılı"></textarea></label><div class="two-col"><label>Seans süresi (dk)<input name="session_minutes" type="number" min="20" max="120" value="50" required></label><label>Seans ücreti (₺)<input name="session_price" type="number" min="0.01" step="0.01" value="1000" required></label></div><fieldset><legend>Çalışma alanları</legend><div id="profile-specialties" class="checkbox-grid"></div></fieldset><button class="primary" type="submit">Profili kaydet →</button><p class="form-message" role="status"></p></form></section><section class="panel"><h2>Çalışma saatlerim</h2><p class="small">Türkiye saati · Seans sürene göre randevu saatleri oluşturulur. Mevcut randevular, çalışma saatlerini silsen de korunur.</p><form id="availability-form"><label>Gün<select name="weekday"><option value="0">Pazartesi</option><option value="1">Salı</option><option value="2">Çarşamba</option><option value="3">Perşembe</option><option value="4">Cuma</option><option value="5">Cumartesi</option><option value="6">Pazar</option></select></label><div class="two-col"><label>Başlangıç<input name="start_time" type="time" value="09:00" required></label><label>Bitiş<input name="end_time" type="time" value="17:00" required></label></div><button class="secondary" type="submit">+ Çalışma aralığı ekle</button><p class="form-message" role="status"></p></form><div id="availability-list"></div></section></div></div><section class="panel appointments-panel"><div class="section-top"><h2>Randevular</h2><button class="text-button" data-action="refresh-dashboard">Yenile ↻</button></div><div id="appointments-list" aria-live="polite"></div></section></section>
+  </main>
+  <footer><a href="/" class="logo">iyi<span class="logo-dot">✳</span></a><p>Kendine iyi gelmenin ilk adımı.</p><span>Psikolog ve psikolojik danışman buluşma alanı</span></footer>
+  <dialog id="auth-dialog"><button class="close" data-close="auth-dialog" aria-label="Kapat">×</button><span class="step-label">YENİ BİR BAŞLANGIÇ</span><h2 id="auth-heading">Tekrar hoş geldin.</h2><p id="auth-description">Randevularını kendi alanından takip et.</p><form id="auth-form"><div id="register-fields" hidden><label>Ad soyad<input name="full_name" minlength="2" maxlength="120" autocomplete="name"></label><label>Hesap türü<select name="role"><option value="client">Destek almak istiyorum</option><option value="therapist">Psikolog / psikolojik danışmanım</option></select></label></div><label>E-posta<input name="email" type="email" required autocomplete="email"></label><label>Şifre<input name="password" type="password" minlength="8" maxlength="128" required autocomplete="current-password"></label><button class="primary full" type="submit" id="auth-submit">Giriş yap →</button><p class="form-message" role="alert"></p></form><button class="text-button" id="auth-toggle">Hesabın yok mu? Kayıt ol</button></dialog>
+  <dialog id="profile-dialog" class="wide-dialog"><button class="close" data-close="profile-dialog" aria-label="Kapat">×</button><div id="profile-content"></div></dialog>
+  <dialog id="review-dialog"><button class="close" data-close="review-dialog" aria-label="Kapat">×</button><h2>Deneyimini paylaş</h2><p>Yorumun adın gösterilmeden yayınlanır. Kişisel veya seansa ait özel bilgilerini paylaşmamaya özen göster.</p><form id="review-form"><label>Puanın<select name="rating"><option value="5">5 — Çok iyi</option><option value="4">4 — İyi</option><option value="3">3 — Orta</option><option value="2">2 — Beklentimin altında</option><option value="1">1 — Kötü</option></select></label><label>Yorumun (isteğe bağlı)<textarea name="comment" maxlength="2000" rows="4"></textarea></label><button class="primary" type="submit">Değerlendirmeyi yayınla</button><p class="form-message" role="alert"></p></form></dialog>
+  <div id="toast" role="status" hidden></div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import pool, text
 
 from alembic import context
 
@@ -12,7 +12,7 @@ from app.config import settings
 from app.db import Base
 from app import models  # noqa: F401
 
-config.set_main_option("sqlalchemy.url", settings.database_url)
+config.set_main_option("sqlalchemy.url", settings.database_url.replace("%", "%%"))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -70,8 +70,11 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
+        schema_name = connection.execute(text("SELECT current_schema()")).scalar()
+        connection.commit()
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, target_metadata=target_metadata,
+            version_table_schema=schema_name
         )
 
         with context.begin_transaction():
